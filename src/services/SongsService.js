@@ -29,13 +29,13 @@ class SongsService {
   }
 
   async getSongs() {
-    const result = await this._pool.query('SELECT * FROM songs');
+    const result = await this._pool.query('SELECT id AS song_id, * FROM songs');
     return result.rows.map(songsModel);
   }
 
   async getSongById(id) {
     const query = {
-      text: 'SELECT * FROM songs WHERE id = $1',
+      text: 'SELECT id AS song_id, * FROM songs WHERE id = $1',
       values: [id],
     };
 

@@ -6,7 +6,7 @@ const songs = require('./api/songs');
 const ClientError = require('./exceptions/ClientError');
 const AlbumsService = require('./services/AlbumsService');
 const SongsService = require('./services/SongsService');
-const { AlbumsValidator, SongsValidator } = require('./validator/albums');
+const { AlbumsValidator, SongsValidator } = require('./validator');
 
 const init = async () => {
   const albumsService = new AlbumsService();

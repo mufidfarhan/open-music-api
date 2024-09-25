@@ -1,25 +1,37 @@
-const albumsModel = ({ 
-  id,
+const albumWithoutSongsModel = ({
+  album_id,
   name,
   year,
 }) => ({
-  id,
+  id: album_id,
   name,
   year,
+})
+
+const albumWithSongsModel = ({ 
+  album_id,
+  name,
+  year,
+  songs,
+}) => ({
+  id: album_id,
+  name,
+  year,
+  songs,
 });
 
 const songsModel = ({ 
-  id,
+  song_id,
   title,
   performer,
 }) => ({
-  id,
+  id: song_id,
   title,
   performer,
 });
 
 const songModel = ({
-  id,
+  song_id,
   title,
   year,
   performer,
@@ -27,7 +39,7 @@ const songModel = ({
   duration,
   album_id,
 }) => ({
-  id,
+  id: song_id,
   title,
   year,
   performer,
@@ -36,4 +48,4 @@ const songModel = ({
   albumId: album_id,
 })
 
-module.exports = { albumsModel, songsModel, songModel };
+module.exports = { albumWithoutSongsModel, albumWithSongsModel, songsModel, songModel };
