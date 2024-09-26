@@ -1,4 +1,4 @@
-const { AlbumPayloadSchema, SongPayloadSchema } = require("./schema");
+const { AlbumPayloadSchema, SongPayloadSchema } = require('./schema');
 const InvariantError = require('../exceptions/InvariantError');
 
 const AlbumsValidator = {

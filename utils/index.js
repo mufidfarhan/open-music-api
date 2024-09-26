@@ -1,14 +1,6 @@
-const albumWithoutSongsModel = ({
-  album_id,
-  name,
-  year,
-}) => ({
-  id: album_id,
-  name,
-  year,
-})
+/* eslint camelcase: "off" */
 
-const albumWithSongsModel = ({ 
+const albumModel = ({
   album_id,
   name,
   year,
@@ -20,7 +12,7 @@ const albumWithSongsModel = ({
   songs,
 });
 
-const songsModel = ({ 
+const songsModel = ({
   song_id,
   title,
   performer,
@@ -46,6 +38,6 @@ const songModel = ({
   genre,
   duration,
   albumId: album_id,
-})
+});
 
-module.exports = { albumWithoutSongsModel, albumWithSongsModel, songsModel, songModel };
+module.exports = { albumModel, songsModel, songModel };

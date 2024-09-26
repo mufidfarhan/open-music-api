@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid');
 const { songsModel, songModel } = require('../../utils');
 const { Pool } = require('pg');
 const NotFoundError = require('../exceptions/NotFoundError');
+const InvariantError = require('../exceptions/InvariantError');
 
 class SongsService {
   constructor() {
@@ -9,27 +10,51 @@ class SongsService {
   };
 
   async addSong({ title, year, genre, performer, duration, albumId }) {
-    const id = 'song-' + nanoid(16);
-    const created_at = new Date().toISOString();
-    const updated_at = created_at;
+    const id = `song-${nanoid(16)}`;
+    const createdAt = new Date().toISOString();
+    const updatedAt = createdAt;
 
     const query = {
       text: 'INSERT INTO songs VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id',
-      values: [id, title, year, genre, performer, duration, albumId, created_at, updated_at],
+      values: [id, title, year, genre, performer, duration, albumId, createdAt, updatedAt],
     };
 
     const result = await this._pool.query(query);
 
     // cek apakah id sudah bertambah
     if (!result.rows[0].id) {
-      throw new InvariantError('Catatan gagal ditambahkan');   
+      throw new InvariantError('Catatan gagal ditambahkan');
     }
 
     return result.rows[0].id;
   }
 
-  async getSongs() {
-    const result = await this._pool.query('SELECT id AS song_id, * FROM songs');
+  async getSongs({ title, performer }) {
+    let text = 'SELECT id AS song_id, * FROM songs';
+    const conditions = [];
+    const values = [];
+
+    if (title) {
+      conditions.push(`title ILIKE $${conditions.length + 1}`);
+      values.push(`%${title}%`);
+    }
+
+    if (performer) {
+      conditions.push(`performer ILIKE $${conditions.length + 1}`);
+      values.push(`%${performer}%`);
+    }
+
+    // apabila conditions terdapat 2 atau lebih data maka akan digabung dengan AND
+    if (conditions.length > 0) {
+      text += ` WHERE ${conditions.join(' AND ')}`;
+    }
+
+    const query = {
+      text,
+      values,
+    };
+
+    const result = await this._pool.query(query);
     return result.rows.map(songsModel);
   }
 

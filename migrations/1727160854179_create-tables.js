@@ -1,3 +1,5 @@
+/* eslint camelcase: "off" */
+
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
  * @param run {() => void | undefined}
@@ -25,7 +27,7 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
-  })
+  });
 
   pgm.createTable('songs', {
     id: {

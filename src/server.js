@@ -37,23 +37,27 @@ const init = async () => {
         validator: SongsValidator,
       },
     },
-]);
+  ]);
 
   server.ext('onPreResponse', (request, h) => {
     const { response }  = request;
 
-    if (response instanceof ClientError) {
-      const newResponse = h.response({
-        status: 'fail',
-        message: response.message,
-      });
-      newResponse.code(response.statusCode);
-      return newResponse;
-    }
-
     if (response instanceof Error) {
+      if (response instanceof ClientError) {
+        const newResponse = h.response({
+          status: 'fail',
+          message: response.message,
+        });
+        newResponse.code(response.statusCode);
+        return newResponse;
+      }
+
+      if (!response.isServer) {
+        return h.continue;
+      }
+
       console.error(response);
-      
+
       const newResponse = h.response({
         status: 'error',
         message: 'Terjadi kegagalan pada server kami',
@@ -67,6 +71,6 @@ const init = async () => {
 
   await server.start();
   console.log(`Server berjalan pada ${server.info.uri}`);
-}
+};
 
 init();
