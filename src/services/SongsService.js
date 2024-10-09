@@ -21,7 +21,6 @@ class SongsService {
 
     const result = await this._pool.query(query);
 
-    // cek apakah id sudah bertambah
     if (!result.rows[0].id) {
       throw new InvariantError('Catatan gagal ditambahkan');
     }
@@ -44,7 +43,6 @@ class SongsService {
       values.push(`%${performer}%`);
     }
 
-    // apabila conditions terdapat 2 atau lebih data maka akan digabung dengan AND
     if (conditions.length > 0) {
       text += ` WHERE ${conditions.join(' AND ')}`;
     }
@@ -70,7 +68,7 @@ class SongsService {
       throw new NotFoundError('Lagu tidak ditemukan');
     }
 
-    return result.rows.map(songModel)[0];
+    return songModel(result.rows[0]);
   }
 
   async editSongById(id, { title, year, genre, performer, duration, albumId }) {
