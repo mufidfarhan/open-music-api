@@ -33,8 +33,8 @@ class PlaylistSongsService {
 
   async getSongsInPlaylist(playlistId) {
     const query = {
-      text:
-        `SELECT
+      text:`
+        SELECT
           playlists.id AS playlist_id,
           playlists.name,
           users.username,
@@ -50,7 +50,8 @@ class PlaylistSongsService {
         LEFT JOIN 
           songs ON playlist_songs.song_id = songs.id
         WHERE 
-          playlists.id = $1`,
+          playlists.id = $1
+        `,
       values: [playlistId],
     };
 

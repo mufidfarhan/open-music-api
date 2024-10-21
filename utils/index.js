@@ -33,11 +33,11 @@ const songModel = ({
 const playlistsModel = ({
   id,
   name,
-  owner,
+  username,
 }) => ({
   id,
   name,
-  username: owner,
+  username,
 });
 
 module.exports = {
