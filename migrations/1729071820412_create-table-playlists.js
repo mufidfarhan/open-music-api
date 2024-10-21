@@ -1,4 +1,8 @@
-/* eslint camelcase: "off" */
+/* eslint-disable camelcase */
+/**
+ * @type {import('node-pg-migrate').ColumnDefinitions | undefined}
+ */
+exports.shorthands = undefined;
 
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
@@ -6,34 +10,18 @@
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
-  pgm.createTable('songs', {
+  pgm.createTable('playlists', {
     id: {
-      type: 'TEXT',
+      type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    title: {
+    name: {
       type: 'TEXT',
       notNull: true,
     },
-    year: {
-      type: 'INTEGER',
+    owner: {
+      type: 'VARCHAR(50)',
       notNull: true,
-    },
-    genre: {
-      type: 'TEXT',
-      notNull: true
-    },
-    performer: {
-      type: 'TEXT',
-      notNull: true,
-    },
-    duration: {
-      type: 'INTEGER',
-      notNull: false,
-    },
-    album_id: {
-      type: 'TEXT',
-      notNull: false,
     },
     created_at: {
       type: 'TEXT',
@@ -45,7 +33,9 @@ exports.up = (pgm) => {
     },
   });
 
-  pgm.addConstraint('songs', 'fk_songs.album_id_albums.id', 'FOREIGN KEY(album_id) REFERENCES albums(id) ON DELETE SET NULL');
+  pgm.addConstraint('playlists', 'unique_owner_playlist', 'UNIQUE(name, owner)');
+
+  pgm.addConstraint('playlists', 'fk_playlists.owner_users.id', 'FOREIGN KEY(owner) REFERENCES users(id) ON DELETE CASCADE');
 };
 
 /**
@@ -54,5 +44,5 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-  pgm.dropTable('songs');
+  pgm.dropTable('playlists');
 };

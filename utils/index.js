@@ -1,29 +1,18 @@
 /* eslint camelcase: "off" */
 
-const albumModel = ({
-  album_id,
-  name,
-  year,
-  songs,
-}) => ({
-  id: album_id,
-  name,
-  year,
-  songs,
-});
-
+// songs
 const songsModel = ({
-  song_id,
+  id,
   title,
   performer,
 }) => ({
-  id: song_id,
+  id,
   title,
   performer,
 });
 
 const songModel = ({
-  song_id,
+  id,
   title,
   year,
   performer,
@@ -31,7 +20,7 @@ const songModel = ({
   duration,
   album_id,
 }) => ({
-  id: song_id,
+  id,
   title,
   year,
   performer,
@@ -40,4 +29,19 @@ const songModel = ({
   albumId: album_id,
 });
 
-module.exports = { albumModel, songsModel, songModel };
+// playlist
+const playlistsModel = ({
+  id,
+  name,
+  owner,
+}) => ({
+  id,
+  name,
+  username: owner,
+});
+
+module.exports = {
+  songsModel,
+  songModel,
+  playlistsModel,
+};

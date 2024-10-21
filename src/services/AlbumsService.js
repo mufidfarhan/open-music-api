@@ -2,7 +2,7 @@
 
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
-const { albumModel, songsModel } = require('../../utils');
+const { songsModel } = require('../../utils');
 const NotFoundError = require('../exceptions/NotFoundError');
 const InvariantError = require('../exceptions/InvariantError');
 
@@ -38,7 +38,7 @@ class AlbumsService {
           albums.id AS album_id, 
           albums.name, 
           albums.year, 
-          songs.id AS song_id, 
+          songs.id, 
           songs.title, 
           songs.performer 
         FROM 
@@ -58,13 +58,14 @@ class AlbumsService {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    const songs = result.rows.length > 1 ? result.rows.map(songsModel) : [];
-    const album = albumModel({
-      album_id: result.rows[0].album_id,
+    const songs = result.rows.length >= 1 && result.rows[0].id != null ? result.rows.map(songsModel) : [];
+
+    const album = {
+      id: result.rows[0].album_id,
       name: result.rows[0].name,
       year: result.rows[0].year,
       songs: songs,
-    });
+    };
 
     return album;
   }
