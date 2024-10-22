@@ -1,7 +1,7 @@
 /* eslint camelcase: "off" */
 
 // songs
-const songsModel = ({
+const simpleSongModel = ({
   id,
   title,
   performer,
@@ -11,7 +11,7 @@ const songsModel = ({
   performer,
 });
 
-const songModel = ({
+const detailedSongModel = ({
   id,
   title,
   year,
@@ -30,7 +30,7 @@ const songModel = ({
 });
 
 // playlist
-const playlistsModel = ({
+const playlistModel = ({
   id,
   name,
   username,
@@ -40,8 +40,21 @@ const playlistsModel = ({
   username,
 });
 
+const activityModel = ({
+  username,
+  title,
+  action,
+  time,
+}) => ({
+  username,
+  title,
+  action,
+  time,
+});
+
 module.exports = {
-  songsModel,
-  songModel,
-  playlistsModel,
+  simpleSongModel,
+  detailedSongModel,
+  playlistModel,
+  activityModel,
 };

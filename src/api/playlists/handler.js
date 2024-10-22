@@ -1,9 +1,10 @@
 const autoBind = require('auto-bind');
 
 class PlaylistsHandler {
-  constructor(playlistsService, playlistSongsService, validator) {
+  constructor(playlistsService, playlistSongsService, activitiesService, validator) {
     this._playlistsService = playlistsService;
     this._playlistSongsService = playlistSongsService;
+    this._activitiesService = activitiesService;
     this._validator = validator;
 
     autoBind(this);
@@ -61,7 +62,9 @@ class PlaylistsHandler {
 
     await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
 
-    const title = await this._playlistSongsService.addSongToPlaylist({ playlistId, songId, credentialId });
+    const title = await this._playlistSongsService.addSongToPlaylist({ playlistId, songId });
+
+    this._activitiesService.addActivity({ playlistId, songId, userId: credentialId, action: 'add' });
 
     const response = h.response({
       status: 'success',
@@ -97,6 +100,8 @@ class PlaylistsHandler {
     await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
 
     await this._playlistSongsService.deleteSongInPlaylist({ playlistId, songId });
+
+    this._activitiesService.addActivity({ playlistId, songId, userId: credentialId, action: 'delete' });
 
     return {
       status: 'success',

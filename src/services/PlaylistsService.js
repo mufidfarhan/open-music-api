@@ -1,6 +1,6 @@
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
-const { playlistsModel } = require('../../utils');
+const { playlistModel } = require('../../utils');
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
 const AuthorizationError = require('../exceptions/AuthorizationError');
@@ -33,8 +33,8 @@ class PlaylistsService {
 
   async getPlaylists(owner) {
     const query = {
-      text: `
-        SELECT 
+      text:
+        `SELECT 
           * 
         FROM 
           playlists
@@ -45,14 +45,13 @@ class PlaylistsService {
         WHERE
           playlists.owner = $1
         OR
-          collaborations.user_id = $1
-      `,
+          collaborations.user_id = $1`,
       values: [owner],
     };
 
     const result = await this._pool.query(query);
 
-    return result.rows.map(playlistsModel);
+    return result.rows.map(playlistModel);
   }
 
   async deletePlaylistById({ playlistId }) {

@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
-const { songsModel } = require('../../utils');
+const { simpleSongModel } = require('../../utils');
 
 class PlaylistSongsService {
   constructor(songsService) {
@@ -33,8 +33,8 @@ class PlaylistSongsService {
 
   async getSongsInPlaylist(playlistId) {
     const query = {
-      text:`
-        SELECT
+      text:
+        `SELECT
           playlists.id AS playlist_id,
           playlists.name,
           users.username,
@@ -50,8 +50,7 @@ class PlaylistSongsService {
         LEFT JOIN 
           songs ON playlist_songs.song_id = songs.id
         WHERE 
-          playlists.id = $1
-        `,
+          playlists.id = $1`,
       values: [playlistId],
     };
 
@@ -61,7 +60,7 @@ class PlaylistSongsService {
       throw new NotFoundError('Playlist tidak ditemukan');
     }
 
-    const songs = result.rows.length >= 1 && result.rows[0].id ? result.rows.map(songsModel) : [];
+    const songs = result.rows.length >= 1 && result.rows[0].id ? result.rows.map(simpleSongModel) : [];
 
     const playlist = {
       id: result.rows[0].playlist_id,
