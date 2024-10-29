@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
-const InvariantError = require('../exceptions/InvariantError');
-const NotFoundError = require('../exceptions/NotFoundError');
-const { simpleSongModel } = require('../../utils');
+const InvariantError = require('../../exceptions/InvariantError');
+const NotFoundError = require('../../exceptions/NotFoundError');
+const { simpleSongModel } = require('../../../utils');
 
 class PlaylistSongsService {
   constructor(songsService) {
