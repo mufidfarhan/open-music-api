@@ -17,8 +17,8 @@ class AlbumsService {
     const updatedAt = createdAt;
 
     const query = {
-      text: 'INSERT INTO albums VALUES($1, $2, $3, $4, $5) RETURNING id',
-      values: [id, name, year, createdAt, updatedAt],
+      text: 'INSERT INTO albums VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
+      values: [id, name, year, null, createdAt, updatedAt],
     };
 
     const result = await this._pool.query(query);
@@ -38,6 +38,7 @@ class AlbumsService {
           albums.id AS album_id, 
           albums.name, 
           albums.year, 
+          albums.cover,
           songs.id, 
           songs.title, 
           songs.performer 
@@ -62,25 +63,33 @@ class AlbumsService {
       id: result.rows[0].album_id,
       name: result.rows[0].name,
       year: result.rows[0].year,
+      coverUrl: result.rows[0].cover,
       songs: songs,
     };
 
     return album;
   }
 
-  async editAlbumById(id, { name, year }) {
+  async editAlbumById(id, { name, year, cover }) {
     const updatedAt = new Date().toISOString();
 
+    const fields = [
+      name !== null ? `name = '${name}'` : null,
+      year !== null ? `year = '${year}'` : null,
+      cover !== null ? `cover = '${cover}'` : null,
+      `updated_at = '${updatedAt}'`
+    ].filter(Boolean).join(', ');
+
     const query = {
-      text: 'UPDATE albums SET name = $1, year = $2, updated_at = $3 WHERE id = $4 RETURNING id',
-      values: [name, year, updatedAt, id],
+      text: `UPDATE albums SET ${fields} WHERE id = $1 RETURNING id`,
+      values: [id]
     };
 
     const result = await this._pool.query(query);
 
     // cek apakah rows terdapat data
     if (!result.rows.length) {
-      throw new NotFoundError('Gagal memperbarui catatan. Id tidak ditemukan');
+      throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan');
     }
   }
 
