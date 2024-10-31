@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 const autoBind = require('auto-bind');
 
 class AlbumLikesHandler {
-  constructor(albumLikesService, albumsService) {
+  constructor(albumLikesService, albumsService, cacheService) {
     this._albumLikesService = albumLikesService;
     this._albumsService = albumsService;
+    this._cacheService = cacheService;
 
     autoBind(this);
   }
@@ -37,18 +39,34 @@ class AlbumLikesHandler {
     };
   }
 
-  async getAlbumLikesHandler(request) {
+  async getAlbumLikesHandler(request, h) {
     const { id: albumId } = request.params;
 
     await this._albumsService.getAlbumById(albumId);
-    const likes = await this._albumLikesService.getAlbumLikes(albumId);
 
-    return {
-      status: 'success',
-      data: {
-        likes: likes,
-      },
-    };
+    try {
+      const likes = await this._cacheService.get(`albums:${albumId}`);
+
+      const response = h.response({
+        status: 'success',
+        data: {
+          likes: parseInt(likes),
+        },
+      });
+
+      response.header('X-Data-Source', 'cache');
+      return response;
+
+    } catch (error) {
+      const likes = await this._albumLikesService.getAlbumLikes(albumId);
+
+      return {
+        status: 'success',
+        data: {
+          likes: parseInt(likes),
+        },
+      };
+    }
   }
 }
 
