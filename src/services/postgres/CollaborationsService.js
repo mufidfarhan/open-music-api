@@ -53,7 +53,6 @@ class CollaborationsService {
       throw new InvariantError('Kolaborasi gagal diverifikasi');
     }
   }
-
 }
 
 module.exports = CollaborationsService;

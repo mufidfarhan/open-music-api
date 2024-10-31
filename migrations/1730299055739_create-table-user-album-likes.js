@@ -6,22 +6,17 @@
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
-  pgm.createTable('users', {
+  pgm.createTable('user_album_likes', {
     id: {
-      type: 'VARCHAR(50)',
+      type: 'VARCHAR',
       primaryKey: true,
     },
-    username: {
-      type: 'VARCHAR(50)',
-      unique: true,
+    user_id: {
+      type: 'VARCHAR',
       notNull: true,
     },
-    password: {
-      type: 'TEXT',
-      notNull: true,
-    },
-    fullname: {
-      type: 'TEXT',
+    album_id: {
+      type: 'VARCHAR',
       notNull: true,
     },
     created_at: {
@@ -33,6 +28,12 @@ exports.up = (pgm) => {
       notNull: true,
     },
   });
+
+  pgm.addConstraint('user_album_likes', 'unique_user_id_and_album_id', 'UNIQUE(user_id, album_id)');
+
+  pgm.createConstraint('user_album_likes', 'fk_user_album_likes.user_id_users.id', 'FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE');
+
+  pgm.createConstraint('user_album_likes', 'fk_user_album_likes.album.id_albums.id', 'FOREIGN KEY(album_id) REFERENCES albums(id) ON DELETE CASCADE');
 };
 
 /**
@@ -41,5 +42,5 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-  pgm.dropTable('users');
+  pgm.dropTable('user_album_likes');
 };

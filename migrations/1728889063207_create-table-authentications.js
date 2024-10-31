@@ -1,7 +1,4 @@
-/**
- * @type {import('node-pg-migrate').ColumnDefinitions | undefined}
- */
-exports.shorthands = undefined;
+/* eslint camelcase: "off" */
 
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
